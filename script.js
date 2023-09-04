@@ -32,15 +32,15 @@ if ('geolocation' in navigator) {
 
       // Crea un marcatore e aggiungilo alla mappa MY POSITION
       const marker = L.marker([lat, lon]).addTo(map);
-      // marker
-      //   .bindPopup(
-      //     L.popup({
-      //       autoClose: false,
-      //       closeOnClick: false,
-      //     })
-      //   )
-      //   .setPopupContent('My position')
-      //   .openPopup();
+      marker
+        .bindPopup(
+          L.popup({
+            autoClose: false,
+            closeOnClick: false,
+          })
+        )
+        .setPopupContent('My position')
+        .openPopup();
 
       //eventhandler onclick
       map.on('click', function (mapE) {
