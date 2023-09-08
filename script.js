@@ -10,7 +10,49 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+/////////////////////////////////////
+//Workout Class
+class Workout {
+  date = new Date();
+  id = (Date.now() + '').slice(-10); // making unique id
+  constructor(coords, duration, distance) {
+    this.coords = coords; // [lat, lng]
+    this.duration = duration; // in min
+    this.distance = distance; // in km
+  }
+}
+// Running class is Workout class child, Pace calculation
+class Running extends Workout {
+  constructor(coords, duration, distance, cadence) {
+    super(coords, duration, distance);
+    this.cadence = cadence;
+    this.clacPace();
+  }
+  clacPace() {
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
 
+// Cycling class is Workout class child, Speed calculation
+class Cycling extends Workout {
+  constructor(coords, duration, distance, elevationGain) {
+    super(coords, duration, distance);
+    this.elevationGain = elevationGain;
+    this.calcSpeed();
+  }
+  calcSpeed() {
+    this.speed = this.distance / this.duration / 60;
+    console.log(this.speed);
+    return this.speed;
+  }
+}
+
+const run1 = new Running([39, -12], 5.2, 24, 178);
+const cycling1 = new Cycling([35, -102], 180, 50, 520);
+console.log(run1, cycling1);
+
+//////////////////////////////////////
 // Refactoring the mapty App using Classes
 class App {
   #map;
