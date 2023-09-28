@@ -66,6 +66,7 @@ class App {
   #map;
   #mapEvent;
   #workouts = [];
+  #zomMap = 13;
 
   constructor() {
     this._getPosition();
@@ -73,6 +74,8 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
 
     inputType.addEventListener('change', this._toggleElevationField);
+
+    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
   }
 
   _getPosition() {
@@ -94,7 +97,7 @@ class App {
     const lon = position.coords.longitude;
     const coords = [lat, lon];
     // find the position and set the map
-    this.#map = L.map('map').setView(coords, 13);
+    this.#map = L.map('map').setView(coords, this.#zomMap);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -141,19 +144,19 @@ class App {
   }
 
   _newWorkout(e) {
+    e.preventDefault();
     // helper function to check inputs are valid!
     const validInputs = (...inputs) =>
       inputs.every(inp => Number.isFinite(inp));
     const allPositive = (...inputs) => inputs.every(inp => inp > 0);
 
-    e.preventDefault();
     // Get data from the form
-    let workout;
     const type = inputType.value;
     const distance = +inputDistance.value; //+ change the value to number
     const duration = +inputDuration.value; //+ change the value to number
     const { lat, lng } = this.#mapEvent.latlng;
 
+    let workout;
     // If workout Running, create running object
     if (type === 'running') {
       const cadence = +inputCadence.value;
@@ -183,7 +186,7 @@ class App {
       workout = new Cycling([lat, lng], duration, distance, elevation);
     }
 
-    this.#workouts.push(this.workout);
+    this.#workouts.push(workout);
 
     // Add new object to workout array
 
@@ -260,6 +263,19 @@ class App {
       `;
     }
     form.insertAdjacentHTML('afterend', html);
+  }
+
+  _moveToPopup(e) {
+    const workoutEl = e.target.closest('.workout');
+    console.log(workoutEl);
+
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+    console.log(workout);
+    this.#map.setView(workout.coords, this.#zomMap);
   }
 }
 
